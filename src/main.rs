@@ -1,7 +1,9 @@
+use axum::handler::Handler;
 use axum::{extract::Query, http::StatusCode, routing::get, Router};
 use std::env;
 use std::net::{SocketAddr, IpAddr, Ipv4Addr};
 use serde::Deserialize;
+use tower_http::compression::CompressionLayer;
 
 #[derive(Debug, Deserialize)]
 struct HelloData {
@@ -30,7 +32,7 @@ async fn main() {
     }
     .unwrap();
 
-    let app = Router::new().route("/hello", get(hello));
+    let app = Router::new().route("/hello", get(hello.layer(CompressionLayer::new())));
 
     let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     println!("listening on {}", addr);
