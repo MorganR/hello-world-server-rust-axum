@@ -9,4 +9,5 @@ edition = "2021"
 tokio = { version = "1", features = ["full"] }
 axum = "0.5"
 serde = { version = "1", features = ["derive"] }
-tower-http = { version = "0.3", features = ["compression-br"] }
+tower = { version = "0.4", features = ["make"] }
+tower-http = { version = "0.3", features = ["compression-br", "fs"] }

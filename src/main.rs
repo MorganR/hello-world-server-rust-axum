@@ -1,8 +1,16 @@
-use axum::{extract::Query, handler::Handler, http::StatusCode, routing::get, Router};
+use axum::{
+    error_handling::HandleError,
+    extract::Query,
+    handler::Handler,
+    http::StatusCode,
+    routing::{get, get_service},
+    Router,
+};
 use serde::Deserialize;
 use std::env;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tower_http::compression::CompressionLayer;
+use tower_http::services::ServeDir;
 
 #[derive(Debug, Deserialize)]
 struct HelloData {
@@ -31,7 +39,15 @@ async fn main() {
     }
     .unwrap();
 
-    let app = Router::new().route("/hello", get(hello.layer(CompressionLayer::new())));
+    let app = Router::new()
+        .route("/hello", get(hello.layer(CompressionLayer::new())))
+        .nest(
+            "/static",
+            get_service(HandleError::new(
+                ServeDir::new("static").precompressed_br(),
+                |_| async move { (StatusCode::INTERNAL_SERVER_ERROR, String::from("I/O error")) },
+            )),
+        );
 
     let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     println!("listening on {}", addr);
