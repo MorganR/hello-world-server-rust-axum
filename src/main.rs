@@ -1,4 +1,4 @@
-use axum::{extract::Query, routing::get, Router};
+use axum::{extract::Query, http::StatusCode, routing::get, Router};
 use std::env;
 use std::net::{SocketAddr, IpAddr, Ipv4Addr};
 use serde::Deserialize;
@@ -10,13 +10,16 @@ struct HelloData {
 }
 
 const DEFAULT_GREETING: &str = "Hello, world!";
+const MAX_NAME_LEN: u16 = 500;
 
-// `String` becomes a `200 OK` with `content-type: text/plain; charset=utf-8`
-async fn hello(data: Query<HelloData>) -> String {
+async fn hello(data: Query<HelloData>) -> Result<String, StatusCode> {
     if data.name.is_empty() {
-        return String::from(DEFAULT_GREETING);
+        return Ok(String::from(DEFAULT_GREETING));
     }
-    return format!("Hello, {}!", data.name);
+    if data.name.len() > usize::from(MAX_NAME_LEN) {
+        return Err(StatusCode::BAD_REQUEST); 
+    }
+    return Ok(format!("Hello, {}!", data.name));
 }
 
 #[tokio::main]
