@@ -1,10 +1,22 @@
-use axum::{routing::get, Router};
+use axum::{extract::Query, routing::get, Router};
 use std::env;
 use std::net::{SocketAddr, IpAddr, Ipv4Addr};
+use serde::Deserialize;
 
-// `&'static str` becomes a `200 OK` with `content-type: text/plain; charset=utf-8`
-async fn hello() -> &'static str {
-    "Hello, world!"
+#[derive(Debug, Deserialize)]
+struct HelloData {
+    #[serde(default)]
+    name: String,
+}
+
+const DEFAULT_GREETING: &str = "Hello, world!";
+
+// `String` becomes a `200 OK` with `content-type: text/plain; charset=utf-8`
+async fn hello(data: Query<HelloData>) -> String {
+    if data.name.is_empty() {
+        return String::from(DEFAULT_GREETING);
+    }
+    return format!("Hello, {}!", data.name);
 }
 
 #[tokio::main]
