@@ -1,8 +1,7 @@
-use axum::handler::Handler;
-use axum::{extract::Query, http::StatusCode, routing::get, Router};
-use std::env;
-use std::net::{SocketAddr, IpAddr, Ipv4Addr};
+use axum::{extract::Query, handler::Handler, http::StatusCode, routing::get, Router};
 use serde::Deserialize;
+use std::env;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tower_http::compression::CompressionLayer;
 
 #[derive(Debug, Deserialize)]
@@ -19,7 +18,7 @@ async fn hello(data: Query<HelloData>) -> Result<String, StatusCode> {
         return Ok(String::from(DEFAULT_GREETING));
     }
     if data.name.len() > usize::from(MAX_NAME_LEN) {
-        return Err(StatusCode::BAD_REQUEST); 
+        return Err(StatusCode::BAD_REQUEST);
     }
     return Ok(format!("Hello, {}!", data.name));
 }
