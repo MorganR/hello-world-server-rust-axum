@@ -13,6 +13,7 @@ RUN cargo build -r --target=x86_64-unknown-linux-musl
 
 ### Final image
 FROM alpine:latest
-COPY --from=serverbuild /app/target/x86_64-unknown-linux-musl/release/hello-world-server-rust-axum /app/
-COPY --from=serverbuild /app/static /app/
-ENTRYPOINT ["/app/hello-world-server-rust-axum"]
+WORKDIR /app
+COPY --from=serverbuild /app/target/x86_64-unknown-linux-musl/release/hello-world-server-rust-axum ./
+COPY --from=serverbuild /app/static ./static
+ENTRYPOINT ["./hello-world-server-rust-axum"]
