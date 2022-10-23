@@ -11,3 +11,4 @@ axum = "0.5"
 serde = { version = "1", features = ["derive"] }
 tower = { version = "0.4", features = ["make"] }
 tower-http = { version = "0.3", features = ["compression-br", "fs"] }
+num_cpus = "1"

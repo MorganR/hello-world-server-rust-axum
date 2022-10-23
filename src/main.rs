@@ -39,6 +39,9 @@ async fn main() {
     }
     .unwrap();
 
+    let cpus = num_cpus::get();
+    println!("Running with {} cpus", cpus);
+
     let app = Router::new()
         .route("/hello", get(hello.layer(CompressionLayer::new())))
         .nest(
