@@ -44,7 +44,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/hello", get(hello.layer(CompressionLayer::new())))
-        .nest(
+        .nest_service(
             "/static",
             get_service(HandleError::new(
                 ServeDir::new("static").precompressed_br(),
