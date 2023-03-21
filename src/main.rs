@@ -49,9 +49,7 @@ async fn async_hello() -> Result<String, StatusCode> {
 async fn lines(data: Query<LinesData>) -> Result<String, StatusCode> {
     let mut result = "<ol>\n".to_string();
     for i in 1..=(data.n) {
-        result += "  <li>Item number: ";
-        result += &i.to_string();
-        result += "</li>\n";
+        result += &format!("  <li>Item number: {}</li>\n", i);
     }
     result += "</ol>";
     Ok(result)
