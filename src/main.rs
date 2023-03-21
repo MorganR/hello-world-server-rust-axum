@@ -3,7 +3,7 @@ use axum::{
     extract::Query,
     http::StatusCode,
     routing::{get, get_service},
-    Router,
+    Router, response::Html,
 };
 use serde::Deserialize;
 use std::{env, time::Duration};
@@ -46,13 +46,13 @@ async fn async_hello() -> Result<String, StatusCode> {
     Ok(String::from(DEFAULT_GREETING))
 }
 
-async fn lines(data: Query<LinesData>) -> Result<String, StatusCode> {
+async fn lines(data: Query<LinesData>) -> Result<Html<String>, StatusCode> {
     let mut result = "<ol>\n".to_string();
     for i in 1..=(data.n) {
         result += &format!("  <li>Item number: {}</li>\n", i);
     }
     result += "</ol>";
-    Ok(result)
+    Ok(Html(result))
 }
 
 async fn math_power_reciprocals_alt(data: Query<MathData>) -> Result<String, StatusCode> {
