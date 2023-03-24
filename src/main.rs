@@ -20,7 +20,7 @@ struct HelloData {
 #[derive(Debug, Deserialize)]
 struct MathData {
     #[serde(default)]
-    n: u64,
+    n: usize,
 }
 
 // Re-use MathData since their needs are equivalent.
