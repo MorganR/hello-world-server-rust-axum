@@ -106,6 +106,8 @@ async fn main() {
     let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port);
     println!("listening on {}", addr);
     axum::Server::bind(&addr)
+        // Disable Nagle (see https://github.com/hyperium/hyper/issues/3187).
+        .tcp_nodelay(true)
         .serve(app.into_make_service())
         .await
         .unwrap();
